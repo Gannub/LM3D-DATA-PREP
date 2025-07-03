@@ -1,0 +1,1 @@
+# Data prep for scans -> Tracker -> Gaussian Avatars
