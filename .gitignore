@@ -1,0 +1,8 @@
+lumio_scans/
+middle/
+to_vhap/
+
+__pycache__/
+*.pyc
+
+camera_convert.ipynb
