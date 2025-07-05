@@ -239,7 +239,7 @@ def converter(input_file, output_file, w, h, rot=0):
     # logger.info(f"Converted {input_file} to {output_file}")
 
 
-def alphanumeric(data):
+def alphanumeric(data): # natural sort
     def convert(text):
         return int(text) if text.isdigit() else text.lower()
     def alphanum_key(key):
@@ -273,38 +273,6 @@ def process_images(
                 )
 
 
-def convert(input_dir, out_dir, width, height, image_type):
-    logger.info(f"Converting files in directory: {input_dir}")
-    assert os.path.isdir(input_dir), f"Directory {input_dir} does not exist."
-
-    logger.info(f"Image dimensions: {width}x{height}")
-    camera_paths, data_paths = (
-        os.path.join(input_dir, "cameras"),
-        os.path.join(input_dir, "data"),
-    )
-
-    if os.path.exists(out_dir):
-        logger.warning(
-            f"Output directory {out_dir} already exists. This will override it."
-        )
-        # sys.exit(1)
-
-    os.makedirs(out_dir, exist_ok=True)
-
-    cam_output_dir = os.path.join(out_dir, "camera_params")
-    image_output_dir = os.path.join(out_dir, "images")
-    alpha_output_dir = os.path.join(out_dir, "alpha_maps")
-    # process camera files
-    process_cameras(camera_paths, width, height, cam_output_dir, rot=[])
-    process_images(
-        data_paths,
-        image_output_dir,
-        alpha_output_dir,
-        width,
-        height,
-        image_type=image_type,
-    )
-    logger.info("DONE!")
 
 if __name__ == "__main__":
     pass
