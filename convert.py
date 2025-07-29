@@ -5,7 +5,7 @@ from typing import Annotated, Literal
 
 import tyro
 
-from converter import process_cameras, process_images, CustomFormatter
+from converter import process_cameras, process_images, process_flame, CustomFormatter
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -15,7 +15,6 @@ ch.setLevel(logging.INFO)
 ch.setFormatter(CustomFormatter())
 
 logger.addHandler(ch)
-
 
 @dataclass
 class Config:
@@ -87,6 +86,12 @@ def convert(input_dir, out_dir, width, height, image_type):
         height,
         image_type=image_type,
     )
+    process_flame(
+        input_dir,
+        out_dir,
+    )
+
+
     logger.info("DONE!")
 
 

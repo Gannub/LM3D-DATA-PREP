@@ -2,6 +2,7 @@ lumio_scans/
 middle/
 to_vhap/
 jea_scans/
+jea_out/
 
 __pycache__/
 *.pyc
@@ -9,3 +10,5 @@ __pycache__/
 camera_convert.ipynb
 
 convert_jea.py
+
+fitScanResult_2023.obj

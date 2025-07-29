@@ -9,6 +9,8 @@ import logging
 from config import rot_dict
 import re
 
+from pathlib import Path
+
 
 class CustomFormatter(logging.Formatter):
     grey = "\x1b[38;20m"
@@ -272,6 +274,55 @@ def process_images(
                     input_file, output_file, width, height, rot=rot_dict[int(cam[3:])]
                 )
 
+def convert_flame(path, out_path):
+
+    s = open(path).read().split('\n')
+    # strip all lines
+    s = [line.strip() for line in s if line.strip()]
+    print(len(s))
+    print(len(s[0].split(' ')))
+    print(len(s[1].split(' ')))
+    print(len(s[2].split(' ')))
+    shape = np.array([float(i) for i in list(filter(lambda x: len(x)!=0, s[0].split(' ')[:300]))])
+    expr  = np.array([float(i) for i in list(filter(lambda x: len(x)!=0, s[0].split(' ')[300:]))]).reshape(1,100)
+    pose  = np.array([float(i) for i in list(filter(lambda x: len(x)!=0, s[1].split(' ')))])
+    tran  = np.array([float(i) for i in list(filter(lambda x: len(x)!=0, s[2].split(' ')))]).reshape(1,3)
+    print(len(shape),len(expr),len(pose),len(tran))
+
+    # pose *= -1
+
+    rot  = pose[ :3].reshape(1,3)
+    neck = pose[3:6].reshape(1,3)
+    jaw  = pose[6:9].reshape(1,3)
+    eye  = pose[9: ].reshape(1,6)
+    offset = np.zeros((1,5143,3))
+    # tran = [[0 ,0, 0]]
+
+    # print("translation", tran)
+    # print("rot", rot)
+    # print("neck", neck)
+    # print("jaw", jaw)
+    # print("eye", eye)
+
+    np.savez(out_path,translation = tran ,rotation = rot ,neck_pose = neck,jaw_pose = jaw ,eyes_pose = eye ,shape = shape ,expr = expr, static_offset = offset)
+
+def process_flame(
+    data_dir, output_dir
+):
+    result_params_file = None
+    for filepath in Path(data_dir).rglob("resultParams.txt"):
+        print(filepath)
+        if "resultParams.txt" in filepath.name:
+            result_params_file = filepath
+            break
+    if result_params_file is None:
+        logger.error("resultParams.txt not found in the data directory.")
+        return
+
+    logger.info(f"Processing FLAME parameters from {result_params_file}")
+
+    convert_flame(result_params_file, os.path.join(output_dir, "flame_params.npz"))
+    
 
 
 if __name__ == "__main__":
